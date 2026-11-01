@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QRForge — Private, Offline QR Code Generator</title>
+<meta name="description" content="Generate static QR codes entirely in your browser. No uploads, no signup, no expiry, no tracking. Free forever.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap header-inner">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">◧</span>
+      <span class="brand-name">QRForge</span>
+    </div>
+    <p class="tagline">Static QR codes, forged locally. Nothing leaves your device.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="badges" aria-label="Guarantees">
+    <span class="badge">✓ 100% offline</span>
+    <span class="badge">✓ Static — never expires</span>
+    <span class="badge">✓ No signup</span>
+    <span class="badge">✓ No uploads</span>
+    <span class="badge">✓ No tracking</span>
+    <span class="badge">✓ Free forever</span>
+  </section>
+
+  <div class="layout">
+    <section class="panel controls" aria-label="QR code settings">
+      <div class="tabs" role="tablist" aria-label="Code type">
+        <button class="tab active" data-tab="url" role="tab" aria-selected="true">URL / Text</button>
+        <button class="tab" data-tab="wifi" role="tab" aria-selected="false">Wi-Fi</button>
+        <button class="tab" data-tab="contact" role="tab" aria-selected="false">Contact</button>
+        <button class="tab" data-tab="email" role="tab" aria-selected="false">Email</button>
+      </div>
+
+      <!-- URL / Text -->
+      <div class="tabpane active" id="pane-url" role="tabpanel">
+        <label class="field">
+          <span class="field-label">Link or text</span>
+          <textarea id="in-url" rows="3" placeholder="https://example.com  or  any plain text" autocomplete="off" spellcheck="false"></textarea>
+          <span class="hint" id="hint-url"></span>
+        </label>
+      </div>
+
+      <!-- Wi-Fi -->
+      <div class="tabpane" id="pane-wifi" role="tabpanel">
+        <label class="field">
+          <span class="field-label">Network name (SSID)</span>
+          <input id="wifi-ssid" type="text" placeholder="HomeNetwork" autocomplete="off">
+        </label>
+        <label class="field">
+          <span class="field-label">Password</span>
+          <input id="wifi-pass" type="text" placeholder="••••••••" autocomplete="off">
+          <span class="hint">Your password never leaves this page — the code is built locally.</span>
+        </label>
+        <div class="row">
+          <label class="field">
+            <span class="field-label">Security</span>
+            <select id="wifi-sec">
+              <option value="WPA" selected>WPA / WPA2 / WPA3</option>
+              <option value="WEP">WEP</option>
+              <option value="nopass">Open (no password)</option>
+            </select>
+          </label>
+          <label class="field check">
+            <input id="wifi-hidden" type="checkbox">
+            <span class="field-label inline">Hidden network</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Contact -->
+      <div class="tabpane" id="pane-contact" role="tabpanel">
+        <div class="row">
+          <label class="field">
+            <span class="field-label">First name</span>
+            <input id="ct-first" type="text" autocomplete="off">
+          </label>
+          <label class="field">
+            <span class="field-label">Last name</span>
+            <input id="ct-last" type="text" autocomplete="off">
+          </label>
+        </div>
+        <label class="field">
+          <span class="field-label">Phone</span>
+          <input id="ct-phone" type="tel" placeholder="+1 555 123 4567" autocomplete="off">
+        </label>
+        <label class="field">
+          <span class="field-label">Email</span>
+          <input id="ct-email" type="email" placeholder="name@example.com" autocomplete="off">
+        </label>
+        <label class="field">
+          <span class="field-label">Organization</span>
+          <input id="ct-org" type="text" autocomplete="off">
+        </label>
+        <label class="field">
+          <span class="field-label">Website</span>
+          <input id="ct-url" type="text" placeholder="https://…" autocomplete="off">
+        </label>
+      </div>
+
+      <!-- Email -->
+      <div class="tabpane" id="pane-email" role="tabpanel">
+        <label class="field">
+          <span class="field-label">Recipient</span>
+          <input id="em-to" type="email" placeholder="name@example.com" autocomplete="off">
+        </label>
+        <label class="field">
+          <span class="field-label">Subject</span>
+          <input id="em-subject" type="text" autocomplete="off">
+        </label>
+        <label class="field">
+          <span class="field-label">Message</span>
+          <textarea id="em-body" rows="3" autocomplete="off"></textarea>
+        </label>
+      </div>
+
+      <div class="section-title">Appearance</div>
+      <div class="row">
+        <label class="field">
+          <span class="field-label">Error correction</span>
+          <select id="sel-ec">
+            <option value="L">L — smallest code</option>
+            <option value="M" selected>M — balanced (recommended)</option>
+            <option value="Q">Q — sturdy</option>
+            <option value="H">H — maximum resilience</option>
+          </select>
+          <span class="hint">Higher levels survive damage but make denser codes.</span>
+        </label>
+      </div>
+      <div class="row">
+        <label class="field color">
+          <span class="field-label">Dark modules</span>
+          <input id="col-fg" type="color" value="#111111">
+        </label>
+        <label class="field color">
+          <span class="field-label">Background</span>
+          <input id="col-bg" type="color" value="#ffffff">
+        </label>
+        <div class="field">
+          <span class="field-label">Quiet zone</span>
+          <span class="quiet-note">4 modules (fixed — required for reliable scanning)</span>
+        </div>
+      </div>
+      <div class="contrast" id="contrast-note" role="status"></div>
+
+      <div class="actions">
+        <button id="btn-clear" class="btn ghost" type="button">Clear</button>
+        <button id="btn-copy" class="btn ghost" type="button">Copy payload</button>
+      </div>
+    </section>
+
+    <section class="panel preview" aria-label="Preview and download">
+      <div class="preview-head">
+        <div>
+          <h2>Preview</h2>
+          <p class="meta" id="meta-line">Enter something to forge a code.</p>
+        </div>
+      </div>
+      <div class="qr-stage" id="qr-stage">
+        <div class="qr-empty" id="qr-empty">Your QR code appears here</div>
+        <div id="qr-holder"></div>
+      </div>
+      <p class="error" id="error-line" role="alert"></p>
+      <div class="payload-line">
+        <span class="field-label">Encoded payload</span>
+        <code id="payload-view" class="payload"></code>
+      </div>
+      <div class="downloads">
+        <button id="btn-svg" class="btn primary" type="button" disabled>Download SVG</button>
+        <button id="btn-png" class="btn primary" type="button" disabled>Download PNG</button>
+      </div>
+      <p class="warn"><strong>Before you print:</strong> scan the code with your phone's camera first.
+      Low-contrast colors and tiny print sizes can make codes unreadable — test at the
+      actual size you'll use.</p>
+    </section>
+  </div>
+
+  <section class="panel explainer">
+    <h2>Why static? Why offline?</h2>
+    <div class="cols">
+      <div>
+        <h3>Static codes don't expire</h3>
+        <p>Many “free” generators give you a <em>dynamic</em> code: it points at their
+        server, which redirects to your link. If you stop paying — or they shut down —
+        your printed codes die. QRForge writes your text <strong>directly into the
+        code</strong>. There is no redirect, no account, and nothing to expire.</p>
+      </div>
+      <div>
+        <h3>Private by construction</h3>
+        <p>Wi-Fi passwords, contact cards, and internal links are sensitive. This page
+        has no server, no analytics, and no network calls — open it from a file or
+        airplane mode and it still works. Your data literally cannot leave your device.</p>
+      </div>
+      <div>
+        <h3>Print-ready SVG</h3>
+        <p>Download a crisp vector SVG for flyers, menus, and signage — it scales to any
+        size without blurring. PNG export is included for quick digital use.</p>
+      </div>
+    </div>
+    <p class="fineprint">QRForge generates standard QR codes (byte mode, versions 1–20) entirely in
+    JavaScript. “QR Code” is a registered trademark of DENSO WAVE INCORPORATED; this is an
+    independent implementation with no affiliation.</p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>QRForge — a tiny offline utility. No cookies, no accounts, no servers.</p>
+  </div>
+</footer>
+
+<script src="qrcode.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
